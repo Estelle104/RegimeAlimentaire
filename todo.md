@@ -2,76 +2,102 @@
 
 ## Table 
 
-user
 
-    id
-    nom
-    email
-    genre
-    taille
-    poids
+BASE DE DONNÉES
 
 
-objectif
+users :
+- id_utilisateur
+- nom
+- email
+- mot_de_passe
+- genre
+- solde
+- est_gold
 
-    id
-    libele
-
-
-objectif_user
-
-    id
-    id_user
-    id_objectif
-
-
-categorie_aliment
-
-    id
-    libele
+details_sante :
+- id
+- id_utilisateur
+- taille
+- poids
+- imc
 
 
-aliment
+objectifs :
+- id
+- libelle
 
-    id
-    libele
-    id_cat_aliment
-    prix_par_calorie
-
-
-apport
-
-    id
-    libele
+objectifs_utilisateurs :
+- id
+- id_utilisateur
+- id_objectif
 
 
-apport_aliment
+categories_aliments :
+- id
+- libelle
 
-    id
-    id_aliment
-    id_apport
-    calorie
+aliments :
+- id
+- libelle
+- id_categorie_aliment
+- prix_par_calorie
+
+apports :
+- id
+- libelle
+
+apports_aliments :
+- id
+- id_aliment
+- id_apport
+- valeur_calorie
 
 
-sport
-
-    id
-    libele
-
-
-regime
-
-    id
-    id_aliment
-    id_duree
-    prix
+sports :
+- id
+- libelle
 
 
-type_abonnement
+regimes :
+- id
+- libelle
+- pourcentage_viande
+- pourcentage_poisson
+- pourcentage_volaille
 
-    id
-    libele
-    pourcentage_remise
+details_regimes :
+- id
+- id_regime
+- duree_jours
+- prix
+- variation_poids_kg
+
+
+suggestions_programmes :
+- id
+- id_objectif
+- id_regime
+- id_sport
+- duree
+
+
+codes_recharge :
+- id
+- valeur_code
+- montant
+- statut
+
+achats_regimes :
+- id
+- id_utilisateur
+- id_regime
+- prix_paye
+
+types_abonnements :
+- id
+- libelle
+- pourcentage_remise
 
 
 ## A faire
@@ -81,7 +107,7 @@ type_abonnement
 
 ### Front Office
 - Inscription / Login
-    - Separation en 2 form = 1 perso , 1 sante
+    - Separation en 2 form  1 perso , 1 sante
 - Profil de l'user
 - Choix d'objectif
 - Suggestion de regime et sa duree selon le choix et profil user
