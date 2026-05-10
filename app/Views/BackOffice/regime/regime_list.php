@@ -2,16 +2,9 @@
 $regimes = isset($regimes) ? $regimes : [];
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?= $this->extend('BackOffice/modele') ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des régimes</title>
-</head>
-
-<body>
+<?= $this->section('content') ?>
     <h1>Liste des régimes</h1>
     <table border="1">
         <thead>
@@ -48,6 +41,4 @@ $regimes = isset($regimes) ? $regimes : [];
             <?php endforeach; ?>
         </tbody>
     </table>
-</body>
-
-</html>
+<?= $this->endSection() ?>
