@@ -1,17 +1,10 @@
 <?php $regime = $regime ?? []; ?>
-<!DOCTYPE html>
-<html lang="en">
+<?= $this->extend('BackOffice/modele') ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis a jour de Regime</title>
-</head>
-
-<body>
+<?= $this->section('content') ?>
     <h1>Mis a jour de Regime</h1>
-    <form action="<?= base_url('backoffice/regimes/update/' . ($regime['id'] ?? '')) ?>" method="post">
-        <?php if (!empty($regime['id'])): ?>
+    <?php if (! empty($regime['id'])): ?>
+        <form action="<?= base_url('backoffice/regimes/update/' . ($regime['id'] ?? '')) ?>" method="post">
 
             <label for="libelle">Libellé:</label>
             <input type="text" id="libelle" name="libelle" value="<?= $regime['libelle'] ?? '' ?>" required><br>
@@ -26,14 +19,12 @@
             <input type="number" id="pourcentage_volaille" name="pourcentage_volaille" value="<?= $regime['pourcentage_volaille'] ?? '' ?>" required><br>
 
             <button type="submit">Mettre à jour</button>
-            </form>
-            <?php else: ?>
-                <p>Erreur : aucun régime sélectionné</p>
-            <?php endif; ?>
+        </form>
+    <?php else: ?>
+        <p>Erreur : aucun régime sélectionné</p>
+    <?php endif; ?>
 
-            <p>
-                <a href="<?= base_url('backoffice/regimes') ?>">Retour à la liste</a>
-            </p>
-</body>
-
-</html>
+    <p>
+        <a href="<?= base_url('backoffice/regimes') ?>">Retour à la liste</a>
+    </p>
+<?= $this->endSection() ?>
