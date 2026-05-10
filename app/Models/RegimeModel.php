@@ -56,4 +56,5 @@ class RegimeModel extends Model
              ->getResult();
          }
     }
+
 }
