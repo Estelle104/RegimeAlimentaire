@@ -41,4 +41,38 @@ class UserController extends BaseController
             ]);
         }
     }
+
+    public function PageConnection()
+    {
+        return view('FrontOffice/connexion');
+    }
+
+    public function VerifierConnection()
+    {
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'message' => 'Donnees de connection invalides',
+            ]);
+        }
+
+        $userModel = new UtilisateurModel();
+
+        try {
+            $user = $userModel->where('email', $data['email'])->first();
+            if (!$user || $data['mot_de_passe'] !== $user['mot_de_passe']) {
+                throw new \Exception("Email ou mot de passe incorrect");
+            }
+
+            session()->set('user_id', $user['id_utilisateur']);
+
+            return $this->response->setStatusCode(200)->setJSON([
+                'message' => 'Connection reussie',
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }

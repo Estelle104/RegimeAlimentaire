@@ -6,13 +6,15 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 // $routes->get('/', 'FrontOffice\UserController::index');
-$routes->get('/', 'FrontOffice\UserController::PageInscription');
+$routes->get('/', 'FrontOffice\UserController::PageConnection');
 
 // $routes->post('/frontoffice/inscription', 'FrontOffice\UserController::InsertionInscription');
 
 $routes->group('frontoffice', function ($routes) {
-    // $routes->get('inscription', 'FrontOffice\UserController::PageInscription');
+    $routes->get('inscription', 'FrontOffice\UserController::PageInscription');
     $routes->post('inscription', 'FrontOffice\UserController::InsertionInscription');
+    $routes->get('connexion', 'FrontOffice\UserController::PageConnection');
+    $routes->post('connexion', 'FrontOffice\UserController::VerifierConnection');
 });
 
 $routes->group('backoffice', function ($routes) {
