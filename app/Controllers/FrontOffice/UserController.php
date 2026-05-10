@@ -4,6 +4,8 @@ namespace App\Controllers\FrontOffice;
 
 use App\Controllers\BaseController;
 use App\Models\UtilisateurModel;
+use App\Models\CodeRechargeModel;
+use App\Models\DemandeRechargeModel;
 
 // use App\Models\
 class UserController extends BaseController
@@ -40,5 +42,81 @@ class UserController extends BaseController
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function profil()
+    {
+        $idUtilisateur = session()->get('user_id');
+        if (!$idUtilisateur) {
+            return redirect()->to('/')->with('error', 'Veuillez vous connecter.');
+        }
+
+        $utilisateurModel = new UtilisateurModel();
+        $user = $utilisateurModel->find($idUtilisateur);
+
+        return view('FrontOffice/profil', ['user' => $user]);
+    }
+
+    public function demanderRecharge()
+    {
+        $codeValeur = $this->request->getPost('code');
+        $idUtilisateur = session()->get('user_id'); // Identifiant en session
+
+        if (!$idUtilisateur || !$codeValeur) {
+            return redirect()->back()->with('error', 'Veuillez vous connecter et saisir un code valide.');
+        }
+
+        $codeModel = new CodeRechargeModel();
+        $code = $codeModel->where('valeur_code', $codeValeur)->where('statut', 0)->first();
+
+        if (!$code) {
+            return redirect()->back()->with('error', 'Code invalide ou déjà utilisé.');
+        }
+
+        $codeModel->update($code['id'], ['statut' => 1]);
+
+        $demandeModel = new DemandeRechargeModel();
+        $demandeModel->insert([
+            'id_utilisateur' => $idUtilisateur,
+            'id_code_recharge' => $code['id'],
+            'est_valide' => 0
+        ]);
+
+        return redirect()->back()->with('success', 'Code soumis avec succès. En attente de validation par l\'administrateur.');
+    }
+
+    public function devenirGold()
+    {
+        $idUtilisateur = session()->get('user_id');
+        
+        if (!$idUtilisateur) {
+            return redirect()->back()->with('error', 'Veuillez vous connecter.');
+        }
+
+        $prixGold = 50000.00; // Définir un prix fixe (ex: 50 000 Ariary)
+
+        $utilisateurModel = new UtilisateurModel();
+        $user = $utilisateurModel->find($idUtilisateur);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur introuvable.');
+        }
+
+        if ($user['est_gold'] === 't' || $user['est_gold'] === true || $user['est_gold'] == 1) {
+            return redirect()->back()->with('info', 'Vous êtes déjà membre Gold !');
+        }
+
+        if ($user['solde'] < $prixGold) {
+            return redirect()->back()->with('error', 'Solde insuffisant pour devenir Gold (Prix : ' . $prixGold . '). Veuillez recharger votre porte-monnaie.');
+        }
+
+        // Débiter le solde et rendre Gold
+        $nouveauSolde = $user['solde'] - $prixGold;
+        $utilisateurModel->update($idUtilisateur, [
+            'solde' => $nouveauSolde,
+            'est_gold' => 'true' // Adaptation Postgres
+        ]);
+
+        return redirect()->back()->with('success', 'Félicitations, vous êtes membre Gold ! Vous bénéficiez de 15% de remise sur tous nos régimes.');
     }
 }
