@@ -17,6 +17,7 @@ $routes->group('frontoffice', function ($routes) {
 
 $routes->group('backoffice', function ($routes) {
     $routes->get('regimes', 'BackOffice\RegimeController::index');
+    $routes->get('dashboard', 'BackOffice\DashboardController::index');
     $routes->post('regimes/create', 'BackOffice\RegimeController::create');
 
     $routes->get('regimes/update/(:num)', 'BackOffice\RegimeController::update/$1');
