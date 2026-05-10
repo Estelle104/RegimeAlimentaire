@@ -4,6 +4,7 @@ namespace App\Controllers\FrontOffice;
 
 use App\Controllers\BaseController;
 use App\Models\UtilisateurModel;
+use App\Libraries\Exporter as ExportPDF;
 
 class RegimeController extends BaseController
 {
@@ -96,5 +97,17 @@ class RegimeController extends BaseController
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    public function exporterPDF()
+    {
+        $idUtilisateur = session()->get('user_id');
+        
+        if (!$idUtilisateur) {
+            return redirect()->to('/')->with('error', 'Veuillez vous connecter.');
+        }
+
+        $exporter = new ExportPDF($idUtilisateur);
+        $exporter->genererPDF();
     }
 }
