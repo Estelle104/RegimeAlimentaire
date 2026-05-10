@@ -101,6 +101,6 @@
     <?php endif; ?>
 
     <hr>
-    <a href="<?= base_url('frontoffice/profil') ?>" style="padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Retour au profil</a>
+    <a href="<?= base_url('frontoffice/profile') ?>" style="padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Retour au profil</a>
 </body>
 </html>
