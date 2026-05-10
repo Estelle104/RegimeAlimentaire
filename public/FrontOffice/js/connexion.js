@@ -28,6 +28,9 @@ form.addEventListener('submit', function (event) {
 
             if (xhr.status === 200) {
                 alert(response.message || 'Connexion reussie');
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
             } else {
                 alert(response.message || 'Erreur de connexion');
             }
