@@ -5,7 +5,15 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+// $routes->get('/', 'FrontOffice\UserController::index');
+$routes->get('/', 'FrontOffice\UserController::PageInscription');
+
+// $routes->post('/frontoffice/inscription', 'FrontOffice\UserController::InsertionInscription');
+
+$routes->group('frontoffice', function ($routes) {
+    // $routes->get('inscription', 'FrontOffice\UserController::PageInscription');
+    $routes->post('inscription', 'FrontOffice\UserController::InsertionInscription');
+});
 
 $routes->group('backoffice', function ($routes) {
     $routes->get('regimes', 'BackOffice\RegimeController::index');
