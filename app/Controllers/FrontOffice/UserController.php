@@ -181,6 +181,7 @@ class UserController extends BaseController
                 'message' => $e->getMessage(),
             ]);
         }
+    }
     public function profil()
     {
         $idUtilisateur = session()->get('user_id');
