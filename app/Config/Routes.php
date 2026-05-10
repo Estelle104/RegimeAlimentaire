@@ -5,9 +5,18 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+// $routes->get('/', 'FrontOffice\UserController::index');
+$routes->get('/', 'FrontOffice\UserController::PageConnection');
 $routes->get('/', 'FrontOffice\UserController::PageInscription');
 
 $routes->group('frontoffice', function ($routes) {
+    $routes->get('inscription', 'FrontOffice\UserController::PageInscription');
+    $routes->post('inscription', 'FrontOffice\UserController::InsertionInscription');
+    $routes->get('connexion', 'FrontOffice\UserController::PageConnection');
+    $routes->post('connexion', 'FrontOffice\UserController::VerifierConnection');
+    $routes->get('profile', 'FrontOffice\UserController::PageProfile');
+    $routes->get('profile/edit', 'FrontOffice\UserController::PageProfileEdit');
+    $routes->post('profile', 'FrontOffice\UserController::UpdateProfile');
     $routes->post('inscription', 'FrontOffice\UserController::InsertionInscription');
     $routes->get('profil', 'FrontOffice\UserController::profil');
     $routes->post('recharge', 'FrontOffice\UserController::demanderRecharge');
