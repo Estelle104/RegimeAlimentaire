@@ -18,9 +18,10 @@ $routes->group('frontoffice', function ($routes) {
     $routes->post('recharge', 'FrontOffice\UserController::demanderRecharge');
     $routes->post('devenir-gold', 'FrontOffice\UserController::devenirGold');
     
-    // Routes pour les régimes
+
     $routes->get('regimes', 'FrontOffice\RegimeController::index');
     $routes->post('acheter-regime/(:num)', 'FrontOffice\RegimeController::acheter/$1');
+    $routes->get('exporter-pdf', 'FrontOffice\RegimeController::exporterPDF');
 });
 
 $routes->group('backoffice', function ($routes) {
