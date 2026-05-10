@@ -53,5 +53,12 @@ if ($imc === null && !empty($details['taille']) && !empty($details['poids'])) {
     <?php else : ?>
         <p>Aucune information sante trouvee.</p>
     <?php endif; ?>
+
+        <hr>
+
+    <h3>Mes Régimes</h3>
+    <p>Découvrez les régimes recommandés pour vous en fonction de vos objectifs !</p>
+    <a href="<?= base_url('frontoffice/regimes') ?>" style="display: inline-block; padding: 12px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Voir les régimes pour moi</a>
+
 </body>
 </html>
