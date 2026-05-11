@@ -30,7 +30,7 @@ if ($imc === null && !empty($details['taille']) && !empty($details['poids'])) {
                     <tr><th>Email</th><td><?= esc($user['email'] ?? '') ?></td></tr>
                     <tr><th>Genre</th><td><?= esc($user['genre'] ?? '') ?></td></tr>
                     <tr><th>Solde</th><td><?= esc($user['solde'] ?? '') ?> Ariary</td></tr>
-                    <tr><th>Statut</th><td><?= !empty($user['est_gold']) ? '⭐ Gold' : 'Standard' ?></td></tr>
+                    <tr><th>Statut</th><td><?= !($user['est_gold']) ? '⭐ Gold' : 'Standard' ?></td></tr>
                 </tbody>
             </table>
         <?php else : ?>
