@@ -47,6 +47,9 @@
         </div>
     </div>
 
+        <a href="<?= base_url('frontoffice/inscription') ?>">Pas encore inscrit ?</a>
+        <a href="<?= base_url('backoffice/connexion') ?>">Connexion admin</a>
+
     <script src="<?= base_url('FrontOffice/js/connexion.js') ?>"></script>
 </body>
 </html>
