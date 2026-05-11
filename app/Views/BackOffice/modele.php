@@ -12,14 +12,14 @@
 			<div class="backoffice-brand">
 				<p class="backoffice-kicker">BackOffice</p>
 				<h1>Regime Alimentaire</h1>
-				<p class="backoffice-subtitle">Gestion claire, élégante et rapide.</p>
+				<p class="backoffice-subtitle"></p>
 			</div>
 
 			<nav class="backoffice-nav" aria-label="Navigation backoffice">
 				<a href="<?= base_url('backoffice/dashboard') ?>">Dashboard</a>
 				<a href="<?= base_url('backoffice/regimes') ?>">Liste des régimes</a>
 				<a href="<?= base_url('backoffice/recharges') ?>">Demandes de recharge</a>
-				<a href="<?= base_url('/') ?>">Retour au site</a>
+				<!-- <a href="<?= base_url('/') ?>">Retour au site</a> -->
 			</nav>
 		</aside>
 
