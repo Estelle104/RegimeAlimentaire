@@ -19,7 +19,26 @@ class RegimeController extends BaseController
         return view('BackOffice/regime/regime_list', $data);
     }
 
-     public function update($id)
+    public function add()
+    {
+        return view('BackOffice/regime/regime_add');
+    }
+
+    public function create()
+    {
+        $model = new RegimeModel();
+
+        $model->save([
+            'libelle' => $this->request->getPost('libelle'),
+            'pourcentage_viande' => $this->request->getPost('pourcentage_viande'),
+            'pourcentage_poisson' => $this->request->getPost('pourcentage_poisson'),
+            'pourcentage_volaille' => $this->request->getPost('pourcentage_volaille'),
+        ]);
+
+        return redirect()->to('/backoffice/regimes');
+    }
+
+    public function update($id)
     {
         $model = new RegimeModel();
 
@@ -49,4 +68,5 @@ class RegimeController extends BaseController
 
         return redirect()->to('/backoffice/regimes');
     }
+
 }
