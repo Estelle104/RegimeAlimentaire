@@ -28,11 +28,12 @@ $routes->group('backoffice', function ($routes) {
     $routes->get('connexion', 'BackOffice\AdminConnexionController::index');
     $routes->post('connexion', 'BackOffice\AdminConnexionController::verifier');
     $routes->get('regimes', 'BackOffice\RegimeController::index');
-    $routes->get('dashboard', 'BackOffice\DashboardController::index');
+    $routes->get('regimes/add', 'BackOffice\RegimeController::add');
     $routes->post('regimes/create', 'BackOffice\RegimeController::create');
     $routes->get('regimes/update/(:num)', 'BackOffice\RegimeController::update/$1');
     $routes->post('regimes/update/(:num)', 'BackOffice\RegimeController::updateAction/$1');
     $routes->get('regimes/delete/(:num)', 'BackOffice\RegimeController::delete/$1');
+    $routes->get('dashboard', 'BackOffice\DashboardController::index');
     
     $routes->get('recharges', 'BackOffice\AdminRechargeController::index');
     $routes->get('recharges/valider/(:num)', 'BackOffice\AdminRechargeController::valider/$1');

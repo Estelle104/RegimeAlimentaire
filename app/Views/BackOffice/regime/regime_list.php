@@ -11,6 +11,7 @@ $regimes = isset($regimes) ? $regimes : [];
                 <p class="backoffice-kicker">Gestion des régimes</p>
                 <h1>Liste des régimes</h1>
             </div>
+            <a href="<?= base_url('backoffice/regimes/add') ?>" class="action-link action-link--edit">Ajouter un régime</a>
         </div>
 
         <?php if (! empty($regimes)): ?>
