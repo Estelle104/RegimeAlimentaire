@@ -37,6 +37,7 @@ class UserController extends BaseController
 
             return $this->response->setStatusCode(200)->setJSON([
                 'message' => 'Inscription reussie',
+                'redirect' => base_url('frontoffice/profile'),
             ]);
         } catch (\Exception $e) {
             return $this->response->setStatusCode(400)->setJSON([

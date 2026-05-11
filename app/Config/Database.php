@@ -82,7 +82,7 @@ class Database extends Config
         'DSN'      => '',
         'hostname' => 'localhost',
         'username' => 'postgres',
-        'password' => '4185',
+        'password' => 'postgres',
         'database' => 'gestion_regime',
         'DBDriver' => 'Postgre',
         'DBPrefix' => '',
