@@ -91,7 +91,7 @@ class Database extends Config
         'charset'  => 'utf8',
         'swapPre'  => '',
         'failover' => [],
-        'port'     => 5432,
+        'port'     => 5433,
         'schema'   => 'public',
     ];
     //    /**

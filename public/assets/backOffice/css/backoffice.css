@@ -81,13 +81,31 @@ a {
     color: var(--bo-text);
     background: var(--bo-surface-soft);
     font-weight: 600;
-    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.backoffice-nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--bo-olive-soft);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.backoffice-nav a:hover::before {
+    left: 0;
 }
 
 .backoffice-nav a:hover {
     border-color: var(--bo-olive-soft);
-    background: #f0f2e7;
-    transform: translateX(2px);
+    transform: translateX(4px);
 }
 
 .backoffice-content {
@@ -111,6 +129,12 @@ a {
     border-radius: 24px;
     padding: 24px;
     box-shadow: var(--bo-shadow);
+    transition: all 0.3s ease;
+}
+
+.content-card:hover {
+    box-shadow: 0 24px 48px rgba(64, 71, 48, 0.15);
+    border-color: var(--bo-olive-soft);
 }
 
 /* Counters / KPI grid */
@@ -172,28 +196,36 @@ a {
     border-radius: 8px;
     overflow: hidden;
     background: var(--bo-surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .backoffice-main thead tr {
-    background: var(--bo-olive-soft);
+    background: linear-gradient(135deg, var(--bo-olive-soft) 0%, #e0e3d6 100%);
 }
 
 .backoffice-main th,
 .backoffice-main td {
     border-bottom: 1px solid var(--bo-border);
-    padding: 12px 14px;
+    padding: 14px 16px;
     text-align: left;
+    font-size: 0.95rem;
 }
 
 .backoffice-main th {
     color: var(--bo-olive-dark);
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+}
+
+.backoffice-main tbody tr {
+    transition: all 0.3s ease;
 }
 
 .backoffice-main tbody tr:hover {
-    background: #fbfaf6;
+    background: linear-gradient(90deg, transparent, rgba(111, 123, 67, 0.04), transparent);
+    box-shadow: inset 0 0 0 1px rgba(111, 123, 67, 0.08);
 }
 
 .small-muted {
@@ -223,6 +255,13 @@ a {
     display: grid;
     grid-template-rows: 180px 1fr;
     box-shadow: 0 10px 24px rgba(64, 71, 48, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.regime-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(64, 71, 48, 0.16);
+    border-color: var(--bo-olive-soft);
 }
 
 .regime-card__media {
@@ -304,39 +343,43 @@ a {
     border-radius: 12px;
     border: 1px solid transparent;
     font-weight: 700;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .action-link:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
 .action-link--edit {
-    background: #efe19f;
+    background: linear-gradient(135deg, #efe19f 0%, #e8d89f 100%);
     color: #5f5011;
+    border-color: #e0d087;
 }
 
 .action-link--edit:hover {
-    box-shadow: 0 8px 18px rgba(202, 165, 43, 0.20);
+    box-shadow: 0 8px 18px rgba(202, 165, 43, 0.3);
 }
 
 .action-link--delete {
-    background: #efb1a8;
+    background: linear-gradient(135deg, #efb1a8 0%, #e89d92 100%);
     color: #6f1f16;
+    border-color: #e08070;
 }
 
 .action-link--delete:hover {
-    box-shadow: 0 8px 18px rgba(178, 75, 63, 0.18);
+    box-shadow: 0 8px 18px rgba(178, 75, 63, 0.3);
 }
 
 .action-link--accept {
-    background: #c7e6c0;
+    background: linear-gradient(135deg, #c7e6c0 0%, #b8ddb0 100%);
     color: #2b6b2a;
-    border-color: rgba(85, 135, 63, 0.18);
+    border-color: rgba(85, 135, 63, 0.3);
 }
 
 .action-link--accept:hover {
-    box-shadow: 0 8px 18px rgba(85, 135, 63, 0.14);
+    box-shadow: 0 8px 18px rgba(85, 135, 63, 0.2);
 }
 
 .empty-state {
@@ -360,12 +403,30 @@ a {
 .backoffice-main textarea,
 .backoffice-main select {
     width: 100%;
-    border: 1px solid var(--bo-border);
+    border: 1.5px solid var(--bo-border);
     border-radius: 14px;
     padding: 12px 14px;
     background: var(--bo-surface);
     color: var(--bo-text);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.backoffice-main input:focus,
+.backoffice-main textarea:focus,
+.backoffice-main select:focus {
+    outline: none;
+    border-color: var(--bo-olive);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 4px rgba(111, 123, 67, 0.08);
+    background: #fafbf9;
+}
+
+.backoffice-main input::placeholder,
+.backoffice-main textarea::placeholder {
+    color: var(--bo-muted);
+    opacity: 0.6;
 }
 
 .backoffice-main button,
@@ -375,19 +436,29 @@ a {
     align-items: center;
     justify-content: center;
     width: fit-content;
-    padding: 11px 16px;
+    padding: 12px 18px;
     border-radius: 12px;
     border: 1px solid var(--bo-olive-dark);
-    background: var(--bo-olive);
+    background: linear-gradient(135deg, var(--bo-olive) 0%, var(--bo-olive-dark) 100%);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.01em;
+    font-size: 0.95rem;
 }
 
 .backoffice-main button:hover,
 .backoffice-main .button:hover,
 .backoffice-main a.button:hover {
-    background: var(--bo-olive-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(85, 113, 54, 0.25);
+}
+
+.backoffice-main button:active,
+.backoffice-main .button:active,
+.backoffice-main a.button:active {
+    transform: translateY(0);
 }
 
 .backoffice-main table {

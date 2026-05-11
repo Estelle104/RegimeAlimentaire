@@ -1,55 +1,118 @@
 <?= $this->extend('FrontOffice/modele') ?>
 
 <?= $this->section('content') ?>
-        <h1>Mes Régimes Recommandés</h1>
+<div class="container">
+    <h1>Régimes Recommandés</h1>
 
     <?php if(session()->getFlashdata('success')): ?>
-        <p style="color: green; font-weight: bold;"><?= session()->getFlashdata('success') ?></p>
+        <div class="success-message"><?= session()->getFlashdata('success') ?></div>
     <?php endif; ?>
     <?php if(session()->getFlashdata('error')): ?>
-        <p style="color: red; font-weight: bold;"><?= session()->getFlashdata('error') ?></p>
+        <div class="error-message"><?= session()->getFlashdata('error') ?></div>
     <?php endif; ?>
 
-    <p><strong>Solde actuel :</strong> <?= esc($user['solde']) ?> Ariary</p>
+    <div class="solde-info">
+        <span class="label">Solde actuel</span>
+        <span class="amount"><?= esc($user['solde']) ?> Ar</span>
+    </div>
+    
     <?php if($est_gold): ?>
-        <p style="background-color: gold; padding: 10px; border-radius: 5px; font-weight: bold;">⭐ Vous êtes Gold ! Bénéficiez de 15% de réduction sur tous les régimes.</p>
+        <div class="gold-badge">Membre Gold — Bénéficiez de 15% de réduction</div>
     <?php endif; ?>
 
-    <hr>
+    <?php if(isset($currentIMC)): ?>
+        <div class="imc-state <?= ($currentIMC < 18.5) ? 'imc-warning' : (($currentIMC > 25) ? 'imc-danger' : 'imc-ideal'); ?>">
+            <div class="imc-header">
+                <strong>Indice de Masse Corporelle</strong>
+                <span class="imc-value"><?= number_format($currentIMC, 2) ?></span>
+            </div>
+            <?php 
+                if ($currentIMC < 18.5) {
+                    echo '<p>Poids insuffisant — Vous devez <strong>prendre du poids</strong> pour atteindre l\'IMC idéal (18.5-25)</p>';
+                } elseif ($currentIMC > 25) {
+                    echo '<p>Surpoids — Vous devez <strong>perdre du poids</strong> pour atteindre l\'IMC idéal (18.5-25)</p>';
+                } else {
+                    echo '<p>Votre IMC est idéal — Continuez à maintenir cette plage (18.5-25)</p>';
+                }
+            ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="divider"></div>
 
     <?php if(!empty($suggestions)): ?>
-        <?php foreach($suggestions as $regime): ?>
-            <div class="regime-card">
-                <h4><?= esc($regime['regime']) ?></h4>
-                <p><strong>Sport recommandé :</strong> <?= esc($regime['sport']) ?></p>
-                <p><strong>Durée :</strong> <?= esc($regime['duree']) ?> jours</p>
-                <p><strong>Perte de poids estimée :</strong> <?= esc($regime['variation_poids_kg']) ?> kg</p>
-                
-                <div class="prix">
-                    <?php 
-                        $prixFinal = $regime['prix'];
-                        if($est_gold) {
-                            $prixRemise = $regime['prix'] * 0.85;
-                            echo '<span class="prix-remise">' . number_format($regime['prix'], 2) . '</span>';
-                            echo number_format($prixRemise, 2) . ' Ariary';
-                        } else {
-                            echo number_format($regime['prix'], 2) . ' Ariary';
-                        }
-                    ?>
-                </div>
+        <div class="regimes-grid">
+            <?php foreach($suggestions as $regime): ?>
+                <div class="regime-card">
+                    <div class="regime-header">
+                        <h3><?= esc($regime['regime']) ?></h3>
+                        <span class="sport-tag"><?= esc($regime['sport']) ?></span>
+                    </div>
+                    
+                    <div class="regime-content">
+                        <div class="info-row">
+                            <span class="label">Durée du programme</span>
+                            <span class="value"><?= esc($regime['duree'] ?? $regime['duree_jours']) ?> jours</span>
+                        </div>
 
-                <form action="<?= base_url('frontoffice/acheter-regime/' . $regime['id']) ?>" method="post" style="margin-top: 10px;">
-                    <button type="submit" class="btn">Acheter ce régime</button>
-                </form>
-            </div>
-        <?php endforeach; ?>
+                        <div class="info-row">
+                            <span class="label">Variation pondérale</span>
+                            <span class="value <?php 
+                                $variation = (float) $regime['variation_poids_kg'];
+                                echo ($variation < 0) ? 'negative' : (($variation > 0) ? 'positive' : 'neutral');
+                            ?>">
+                                <?php 
+                                    $variation = (float) $regime['variation_poids_kg'];
+                                    if ($variation < 0) {
+                                        echo abs($variation) . ' kg (perte)';
+                                    } elseif ($variation > 0) {
+                                        echo '+' . $variation . ' kg (gain)';
+                                    } else {
+                                        echo 'Maintien';
+                                    }
+                                ?>
+                            </span>
+                        </div>
+                        
+                        <?php if(!empty($regime['jours_pour_imc']) && $idObjectifs == 3): ?>
+                            <div class="info-row highlight">
+                                <span class="label">Durée IMC idéal</span>
+                                <span class="value"><?= esc($regime['jours_pour_imc']) ?> jours</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="regime-footer">
+                        <div class="prix-section">
+                            <?php 
+                                if($est_gold && isset($regime['prix_final'])) {
+                                    echo '<span class="prix-original">' . number_format($regime['prix'], 0) . ' Ar</span>';
+                                    echo '<span class="prix-final">' . number_format($regime['prix_final'], 0) . ' Ar</span>';
+                                } else {
+                                    echo '<span class="prix-final">' . number_format($regime['prix_final'] ?? $regime['prix'], 0) . ' Ar</span>';
+                                }
+                            ?>
+                        </div>
+
+                        <form action="<?= base_url('frontoffice/acheter-regime/' . $regime['id']) ?>" method="post">
+                            <button type="submit" class="btn-primary">Acheter</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     <?php else: ?>
-        <p style="color: #999;">Aucun régime recommandé trouvé. Complétez votre profil avec vos objectifs pour voir les recommandations.</p>
+        <div class="no-results">
+            <p>Aucun régime recommandé trouvé.</p>
+            <p>Assurez-vous que votre profil est complet et que vous avez un objectif assigné.</p>
+        </div>
     <?php endif; ?>
 
-    <hr>
-    <div style="margin-top: 20px;">
-        <a href="<?= base_url('frontoffice/profile') ?>" style="padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Retour au profil</a>
-        <a href="<?= base_url('frontoffice/exporter-pdf') ?>" style="padding: 10px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; margin-left: 10px;">📥 Telecharger en PDF</a>
+    <div class="divider"></div>
+    
+    <div class="footer-actions">
+        <a href="<?= base_url('frontoffice/profile') ?>" class="btn-secondary">Profil</a>
+        <a href="<?= base_url('frontoffice/exporter-pdf') ?>" class="btn-secondary">Télécharger PDF</a>
     </div>
+</div>
 <?= $this->endSection() ?>

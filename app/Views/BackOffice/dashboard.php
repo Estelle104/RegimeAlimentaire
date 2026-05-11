@@ -113,51 +113,66 @@ foreach ($achatsParRegime as $ligne) {
         })();
     </script>
 
-    <h3>Derniers achats</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Utilisateur</th>
-                <th>Régime</th>
-                <th>Prix payé</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($recentAchats === []): ?>
+    <div class="section-head">
+        <div>
+            <h3>Derniers achats</h3>
+        </div>
+    </div>
+    <div class="backoffice-main" style="margin-bottom: 2rem;">
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="4">Aucun achat enregistré</td>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Régime</th>
+                    <th>Montant</th>
                 </tr>
-            <?php else: ?>
-                <?php foreach ($recentAchats as $achat): ?>
+            </thead>
+            <tbody>
+                <?php if ($recentAchats === []): ?>
                     <tr>
-                        <td><?= htmlspecialchars((string) ($achat['id'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($achat['nom_utilisateur'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($achat['nom_regime'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($achat['prix_paye'] ?? '')) ?></td>
+                        <td colspan="4" style="text-align: center; color: var(--bo-muted);">Aucun achat enregistré</td>
                     </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
+                <?php else: ?>
+                    <?php foreach ($recentAchats as $achat): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars((string) ($achat['id'] ?? '')) ?></strong></td>
+                            <td><?= htmlspecialchars((string) ($achat['nom_utilisateur'] ?? '')) ?></td>
+                            <td>
+                                <span style="display: inline-block; padding: 6px 12px; background: var(--bo-olive-soft); color: var(--bo-olive-dark); border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
+                                    <?= htmlspecialchars((string) ($achat['nom_regime'] ?? '')) ?>
+                                </span>
+                            </td>
+                            <td><strong style="color: var(--bo-olive); font-size: 1.05rem;"><?= htmlspecialchars((string) ($achat['prix_paye'] ?? '')) ?> Ar</strong></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
-    <h3>Derniers codes</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Code</th>
-                <th>Montant</th>
-                <th>Statut</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($recentCodes === []): ?>
+    <div class="section-head">
+        <div>
+            <h3>Derniers codes</h3>
+        </div>
+    </div>
+    <div class="backoffice-main">
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="4">Aucun code enregistré</td>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
                 </tr>
-            <?php else: ?>
-                <?php foreach ($recentCodes as $code): ?>
+            </thead>
+            <tbody>
+                <?php if ($recentCodes === []): ?>
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--bo-muted);">Aucun code enregistré</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($recentCodes as $code): ?>
                     <tr>
                         <td><?= htmlspecialchars((string) ($code['id'] ?? '')) ?></td>
                         <td><?= htmlspecialchars((string) ($code['valeur_code'] ?? '')) ?></td>

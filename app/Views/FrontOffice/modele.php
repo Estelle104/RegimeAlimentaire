@@ -6,6 +6,7 @@
     <title>FrontOffice</title>
     <link rel="stylesheet" href="<?= base_url('assets/backOffice/css/backoffice.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/frontOffice/css/front.css') ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="backoffice-shell">

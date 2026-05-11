@@ -30,6 +30,23 @@
                 <input type="number" id="pourcentage_volaille" name="pourcentage_volaille" min="0" max="100" placeholder="0-100" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--bo-border); border-radius: 8px;">
             </div>
 
+            <h3>Effet / Détails du régime</h3>
+
+            <div style="margin-bottom: 18px;">
+                <label for="duree_jours" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--bo-text);">Durée (jours)</label>
+                <input type="number" id="duree_jours" name="duree_jours" min="0" placeholder="ex: 30" style="width: 100%; padding: 10px 14px; border: 1px solid var(--bo-border); border-radius: 8px;">
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label for="prix" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--bo-text);">Prix</label>
+                <input type="number" id="prix" name="prix" step="0.01" min="0" placeholder="ex: 150000" style="width: 100%; padding: 10px 14px; border: 1px solid var(--bo-border); border-radius: 8px;">
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label for="variation_poids_kg" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--bo-text);">Variation poids (kg)</label>
+                <input type="number" id="variation_poids_kg" name="variation_poids_kg" step="0.01" placeholder="ex: -2.5 pour perte, 3.0 pour prise" style="width: 100%; padding: 10px 14px; border: 1px solid var(--bo-border); border-radius: 8px;">
+            </div>
+
             <div style="display: flex; gap: 10px; margin-top: 22px;">
                 <button type="submit" class="backoffice-main button" style="padding: 12px 24px; background: var(--bo-olive); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Créer le régime</button>
                 <a href="<?= base_url('backoffice/regimes') ?>" class="action-link action-link--delete" style="padding: 12px 24px; text-decoration: none; display: inline-block;">Annuler</a>

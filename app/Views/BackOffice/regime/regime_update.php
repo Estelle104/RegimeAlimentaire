@@ -18,6 +18,17 @@
             <label for="pourcentage_volaille">Pourcentage de volaille:</label>
             <input type="number" id="pourcentage_volaille" name="pourcentage_volaille" value="<?= $regime['pourcentage_volaille'] ?? '' ?>" required><br>
 
+            <h3>Effet / Détails du régime</h3>
+
+            <label for="duree_jours">Durée (jours):</label>
+            <input type="number" id="duree_jours" name="duree_jours" value="<?= isset($detail['duree_jours']) ? $detail['duree_jours'] : '' ?>"><br>
+
+            <label for="prix">Prix:</label>
+            <input type="number" id="prix" name="prix" step="0.01" value="<?= isset($detail['prix']) ? $detail['prix'] : '' ?>"><br>
+
+            <label for="variation_poids_kg">Variation poids (kg):</label>
+            <input type="number" id="variation_poids_kg" name="variation_poids_kg" step="0.01" value="<?= isset($detail['variation_poids_kg']) ? $detail['variation_poids_kg'] : '' ?>"><br>
+
             <button type="submit">Mettre à jour</button>
         </form>
     <?php else: ?>
