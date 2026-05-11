@@ -5,6 +5,7 @@ namespace App\Controllers\FrontOffice;
 use App\Controllers\BaseController;
 use App\Models\UtilisateurModel;
 use App\Libraries\Exporter as ExportPDF;
+use App\Models\ObjectifUtilisateurModel;
 
 class RegimeController extends BaseController
 {
@@ -21,25 +22,116 @@ class RegimeController extends BaseController
         $utilisateurModel = new UtilisateurModel();
         $user = $utilisateurModel->find($idUtilisateur);
 
-        $objectifsUtilisateur = $db->table('objectifs_utilisateurs')
-                                   ->select('id_objectif')
-                                   ->where('id_utilisateur', $idUtilisateur)
-                                   ->get()
-                                   ->getResultArray();
+        $idObjectif = new ObjectifUtilisateurModel();
+        $idOb= $idObjectif->getObjectifsByUtilisateur($idUtilisateur);
+        
 
-        $idObjectifs = array_column($objectifsUtilisateur, 'id_objectif');
+$idObjectifs = $idOb ? $idOb['id_objectif'] : null;
+        $detailsSante = $db->table('details_sante')->where('id_utilisateur', $idUtilisateur)->get()->getRowArray();
+        
+        $needsWeightLoss = false;
+        $needsWeightGain = false;
+        $needsMaintenance = false;
+        $currentIMC = null;
+        
+        if ($detailsSante && isset($detailsSante['taille']) && isset($detailsSante['poids'])) {
+            $taille = (float) $detailsSante['taille'];
+            $poids = (float) $detailsSante['poids'];
+            if ($taille > 0) {
+                $currentIMC = $poids / ($taille * $taille);
+                
+                if ($currentIMC < 18.5) {
+                    $needsWeightGain = true;
+                }
+                elseif ($currentIMC > 25) {
+                    $needsWeightLoss = true;
+                }
+                else {
+                    $needsMaintenance = true;
+                }
+            }
+        }
 
-        $suggestions = $db->table('suggestions_programmes')
-                         ->select('suggestions_programmes.id, regimes.libelle as regime, sports.libelle as sport, suggestions_programmes.duree, details_regimes.prix, details_regimes.variation_poids_kg')
-                         ->join('regimes', 'regimes.id = suggestions_programmes.id_regime')
-                         ->join('sports', 'sports.id = suggestions_programmes.id_sport')
-                         ->join('details_regimes', 'details_regimes.id_regime = regimes.id')
-                         ->whereIn('suggestions_programmes.id_objectif', $idObjectifs ?: [0])
-                         ->get()
-                         ->getResultArray();
+        $query = $db->table('regimes')
+                    ->select('regimes.id, regimes.libelle as regime, details_regimes.prix, details_regimes.variation_poids_kg, details_regimes.duree_jours, sports.libelle as sport, suggestions_programmes.duree')
+                    ->join('details_regimes', 'details_regimes.id_regime = regimes.id')
+                    ->join('suggestions_programmes', 'suggestions_programmes.id_regime = regimes.id', 'left')
+                    ->join('sports', 'sports.id = suggestions_programmes.id_sport', 'left');
+        
+        if (!empty($idObjectifs)) {
+            $query->groupStart();
+            if ($idObjectifs == 1) {
+                $query->where('details_regimes.variation_poids_kg < 0', null, false);
+            }
+            if ($idObjectifs == 2) {
+                $query->Where('details_regimes.variation_poids_kg > 0', null, false);
+            }
+            if ($idObjectifs == 3) {
+                if ($needsWeightLoss) {
+                    $query->Where('details_regimes.variation_poids_kg < 0', null, false);
+                } elseif ($needsWeightGain) {
+                    $query->Where('details_regimes.variation_poids_kg > 0', null, false);
+                } else {
+                    $query->Where('ABS(details_regimes.variation_poids_kg) <= 0.5', null, false);
+                }
+            }
+            $query->groupEnd();
+        }
+        
+        $suggestions = $query->get()->getResultArray();
+
+        foreach ($suggestions as &$s) {
+            $s['jours_pour_imc'] = null;
+            $s['prix_final'] = $s['prix'];
+            
+            if (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1)) {
+                $s['prix_final'] = $s['prix'] * 0.85;
+            }
+            
+            if ($detailsSante && isset($detailsSante['taille']) && isset($detailsSante['poids'])) {
+                $taille = (float) $detailsSante['taille'];
+                $poids = (float) $detailsSante['poids'];
+                
+                if ($taille > 0 && $currentIMC !== null) {
+                    if ($currentIMC < 18.5) {
+                        $targetBMI = 18.5; 
+                    } elseif ($currentIMC > 25) {
+                        $targetBMI = 25; 
+                    } else {
+                        $targetBMI = $currentIMC; 
+                    }
+
+                    $targetPoids = $targetBMI * $taille * $taille;
+                    $poidsNecessaire = $targetPoids - $poids;
+
+                    $duree_jours = isset($s['duree_jours']) ? (int) $s['duree_jours'] : 0;
+                    $variation_par_duree = isset($s['variation_poids_kg']) ? (float) $s['variation_poids_kg'] : 0.0;
+
+                    if ($duree_jours > 0 && $variation_par_duree != 0.0) {
+                        $daily_change = $variation_par_duree / $duree_jours;
+                        if ($daily_change != 0.0) {
+                            $jours = (int) ceil(abs($poidsNecessaire) / abs($daily_change));
+                            $s['jours_pour_imc'] = $jours;
+                            
+                            if ($idObjectifs == 3) {
+                                $s['prix_final'] = $s['prix'] * ($jours / $duree_jours);
+                                if (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1)) {
+                                    $s['prix_final'] = $s['prix_final'] * 0.85;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         $data['user'] = $user;
         $data['suggestions'] = $suggestions;
+        $data['currentIMC'] = $currentIMC;
+        $data['needsWeightLoss'] = $needsWeightLoss;
+        $data['needsWeightGain'] = $needsWeightGain;
+        $data['needsMaintenance'] = $needsMaintenance;
+        $data['idObjectifs'] = $idObjectifs;
         $data['est_gold'] = (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1));
 
         return view('FrontOffice/regimes', $data);

@@ -30,22 +30,119 @@ class Exporter extends FPDF
             return false;
         }
 
-        $objectifsUtilisateur = $this->db->table('objectifs_utilisateurs')
-                                         ->select('id_objectif')
-                                         ->where('id_utilisateur', $this->idUtilisateur)
-                                         ->get()
-                                         ->getResultArray();
+        // Récupérer l'objectif de l'utilisateur
+        $idObjectifRow = $this->db->table('objectifs_utilisateurs')
+                                   ->select('id_objectif')
+                                   ->where('id_utilisateur', $this->idUtilisateur)
+                                   ->get()
+                                   ->getRowArray();
+        
+        $idObjectifs = $idObjectifRow ? $idObjectifRow['id_objectif'] : null;
 
-        $idObjectifs = array_column($objectifsUtilisateur, 'id_objectif');
+        // Récupérer détails santé et calculer IMC
+        $detailsSante = $this->db->table('details_sante')
+                                  ->where('id_utilisateur', $this->idUtilisateur)
+                                  ->get()
+                                  ->getRowArray();
+        
+        $needsWeightLoss = false;
+        $needsWeightGain = false;
+        $needsMaintenance = false;
+        $currentIMC = null;
+        
+        if ($detailsSante && isset($detailsSante['taille']) && isset($detailsSante['poids'])) {
+            $taille = (float) $detailsSante['taille'];
+            $poids = (float) $detailsSante['poids'];
+            if ($taille > 0) {
+                $currentIMC = $poids / ($taille * $taille);
+                
+                if ($currentIMC < 18.5) {
+                    $needsWeightGain = true;
+                }
+                elseif ($currentIMC > 25) {
+                    $needsWeightLoss = true;
+                }
+                else {
+                    $needsMaintenance = true;
+                }
+            }
+        }
 
-        $suggestions = $this->db->table('suggestions_programmes')
-                               ->select('suggestions_programmes.id, regimes.libelle as regime, regimes.pourcentage_viande, regimes.pourcentage_poisson, regimes.pourcentage_volaille, sports.libelle as sport, suggestions_programmes.duree, details_regimes.prix, details_regimes.variation_poids_kg, details_regimes.duree_jours')
-                               ->join('regimes', 'regimes.id = suggestions_programmes.id_regime')
-                               ->join('sports', 'sports.id = suggestions_programmes.id_sport')
-                               ->join('details_regimes', 'details_regimes.id_regime = regimes.id')
-                               ->whereIn('suggestions_programmes.id_objectif', $idObjectifs ?: [0])
-                               ->get()
-                               ->getResultArray();
+        // Requête de base
+        $query = $this->db->table('regimes')
+                          ->select('regimes.id, regimes.libelle as regime, regimes.pourcentage_viande, regimes.pourcentage_poisson, regimes.pourcentage_volaille, sports.libelle as sport, suggestions_programmes.duree, details_regimes.prix, details_regimes.variation_poids_kg, details_regimes.duree_jours')
+                          ->join('details_regimes', 'details_regimes.id_regime = regimes.id')
+                          ->join('suggestions_programmes', 'suggestions_programmes.id_regime = regimes.id', 'left')
+                          ->join('sports', 'sports.id = suggestions_programmes.id_sport', 'left');
+
+        // Filtrer par objectif
+        if (!empty($idObjectifs)) {
+            $query->groupStart();
+            if ($idObjectifs == 1) {
+                $query->where('details_regimes.variation_poids_kg < 0', null, false);
+            }
+            if ($idObjectifs == 2) {
+                $query->Where('details_regimes.variation_poids_kg > 0', null, false);
+            }
+            if ($idObjectifs == 3) {
+                if ($needsWeightLoss) {
+                    $query->Where('details_regimes.variation_poids_kg < 0', null, false);
+                } elseif ($needsWeightGain) {
+                    $query->Where('details_regimes.variation_poids_kg > 0', null, false);
+                } else {
+                    $query->Where('ABS(details_regimes.variation_poids_kg) <= 0.5', null, false);
+                }
+            }
+            $query->groupEnd();
+        }
+        
+        $suggestions = $query->get()->getResultArray();
+
+        // Calculer jours_pour_imc et prix_final pour chaque suggestion
+        foreach ($suggestions as &$s) {
+            $s['jours_pour_imc'] = null;
+            $s['prix_final'] = $s['prix'];
+            
+            if (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1)) {
+                $s['prix_final'] = $s['prix'] * 0.85;
+            }
+            
+            if ($detailsSante && isset($detailsSante['taille']) && isset($detailsSante['poids'])) {
+                $taille = (float) $detailsSante['taille'];
+                $poids = (float) $detailsSante['poids'];
+                
+                if ($taille > 0 && $currentIMC !== null) {
+                    if ($currentIMC < 18.5) {
+                        $targetBMI = 18.5; 
+                    } elseif ($currentIMC > 25) {
+                        $targetBMI = 25; 
+                    } else {
+                        $targetBMI = $currentIMC; 
+                    }
+
+                    $targetPoids = $targetBMI * $taille * $taille;
+                    $poidsNecessaire = $targetPoids - $poids;
+
+                    $duree_jours = isset($s['duree_jours']) ? (int) $s['duree_jours'] : 0;
+                    $variation_par_duree = isset($s['variation_poids_kg']) ? (float) $s['variation_poids_kg'] : 0.0;
+
+                    if ($duree_jours > 0 && $variation_par_duree != 0.0) {
+                        $daily_change = $variation_par_duree / $duree_jours;
+                        if ($daily_change != 0.0) {
+                            $jours = (int) ceil(abs($poidsNecessaire) / abs($daily_change));
+                            $s['jours_pour_imc'] = $jours;
+                            
+                            if ($idObjectifs == 3) {
+                                $s['prix_final'] = $s['prix'] * ($jours / $duree_jours);
+                                if (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1)) {
+                                    $s['prix_final'] = $s['prix_final'] * 0.85;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         $est_gold = (!empty($user['est_gold']) && ($user['est_gold'] === 't' || $user['est_gold'] == 1));
 
@@ -68,7 +165,7 @@ class Exporter extends FPDF
                 
                 $this->SetFont('Arial', '', 10);
                 $this->Ln(2);
-                $this->Cell(0, 8, '  Duree : ' . $regime['duree_jours'] . ' jours', 0, 1);
+                $this->Cell(0, 8, '  Duree : ' . ($regime['duree'] ?? $regime['duree_jours']) . ' jours', 0, 1);
                 $this->Cell(0, 8, '  Sport recommande : ' . $regime['sport'], 0, 1);
                 $this->Cell(0, 8, '  Variation de poids estimee : ' . $regime['variation_poids_kg'] . ' kg', 0, 1);
                 $this->Ln(1);
@@ -81,12 +178,11 @@ class Exporter extends FPDF
                 $this->Ln(2);
                 
                 $this->SetFont('Arial', 'B', 10);
-                $prixFinal = $regime['prix'];
-                if ($est_gold) {
-                    $prixFinal = $regime['prix'] * 0.85;
-                    $this->Cell(0, 8, '  Prix : ' . number_format($regime['prix'], 2) . ' Ariary -> ' . number_format($prixFinal, 2) . ' Ariary (remise -15%)', 0, 1);
-                } else {
-                    $this->Cell(0, 8, '  Prix : ' . number_format($regime['prix'], 2) . ' Ariary', 0, 1);
+                $this->Cell(0, 8, '  Prix : ' . number_format($regime['prix_final'], 2) . ' Ariary', 0, 1);
+                
+                if ($regime['jours_pour_imc'] !== null) {
+                    $this->SetFont('Arial', '', 9);
+                    $this->Cell(0, 8, '  Jours pour atteindre IMC ideal : ' . $regime['jours_pour_imc'] . ' jours', 0, 1);
                 }
                 
                 $this->Ln(5);

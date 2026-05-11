@@ -5,6 +5,7 @@ namespace App\Controllers\BackOffice;
 use App\Controllers\BaseController;
 
 use App\Models\RegimeModel;
+use App\Models\DetailRegimeModel;
 
 class RegimeController extends BaseController
 {
@@ -34,6 +35,22 @@ class RegimeController extends BaseController
             'pourcentage_poisson' => $this->request->getPost('pourcentage_poisson'),
             'pourcentage_volaille' => $this->request->getPost('pourcentage_volaille'),
         ]);
+        $insertId = $model->getInsertID();
+
+        // Créer l'effet / détails du régime si fournis
+        $duree = $this->request->getPost('duree_jours');
+        $prix = $this->request->getPost('prix');
+        $variation = $this->request->getPost('variation_poids_kg');
+
+        if ($insertId && ($duree !== null || $prix !== null || $variation !== null)) {
+            $detailModel = new DetailRegimeModel();
+            $detailModel->insert([
+                'id_regime' => $insertId,
+                'duree_jours' => $duree ?: 0,
+                'prix' => $prix ?: 0,
+                'variation_poids_kg' => $variation ?: 0,
+            ]);
+        }
 
         return redirect()->to('/backoffice/regimes');
     }
@@ -42,8 +59,13 @@ class RegimeController extends BaseController
     {
         $model = new RegimeModel();
 
+        $regime = $model->find($id);
+        $detailModel = new DetailRegimeModel();
+        $detail = $detailModel->where('id_regime', $id)->first();
+
         return view('BackOffice/regime/regime_update', [
-            'regime' => $model->find($id)
+            'regime' => $regime,
+            'detail' => $detail,
         ]);
     }
 
@@ -57,6 +79,29 @@ class RegimeController extends BaseController
             'pourcentage_poisson' => $this->request->getPost('pourcentage_poisson'),
             'pourcentage_volaille' => $this->request->getPost('pourcentage_volaille'),
         ]);
+
+        // Mettre à jour ou créer les détails du régime
+        $detailModel = new DetailRegimeModel();
+        $existing = $detailModel->where('id_regime', $id)->first();
+
+        $duree = $this->request->getPost('duree_jours') ?: 0;
+        $prix = $this->request->getPost('prix') ?: 0;
+        $variation = $this->request->getPost('variation_poids_kg') ?: 0;
+
+        if ($existing) {
+            $detailModel->update($existing['id'], [
+                'duree_jours' => $duree,
+                'prix' => $prix,
+                'variation_poids_kg' => $variation,
+            ]);
+        } else {
+            $detailModel->insert([
+                'id_regime' => $id,
+                'duree_jours' => $duree,
+                'prix' => $prix,
+                'variation_poids_kg' => $variation,
+            ]);
+        }
 
         return redirect()->to('/backoffice/regimes');
     }

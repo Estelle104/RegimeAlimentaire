@@ -70,6 +70,34 @@
             height: 44px;
             padding: .4rem .5rem;
         }
+        .auth-buttons {
+            float: right;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .auth-buttons a {
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 300ms ease;
+        }
+        .auth-buttons .login-btn {
+            color: rgba(221, 72, 20, 1);
+            border: 2px solid rgba(221, 72, 20, 1);
+        }
+        .auth-buttons .login-btn:hover {
+            background-color: rgba(221, 72, 20, .1);
+        }
+        .auth-buttons .signup-btn {
+            background-color: rgba(221, 72, 20, 1);
+            color: white;
+        }
+        .auth-buttons .signup-btn:hover {
+            background-color: rgba(221, 72, 20, .8);
+        }
         header .menu-toggle {
             display: none;
             float: right;
@@ -220,6 +248,10 @@
             <li class="menu-item hidden"><a
                     href="https://codeigniter.com/contribute" target="_blank">Contribute</a>
             </li>
+            <div class="auth-buttons">
+                <a href="<?= base_url('frontoffice/connexion') ?>" class="login-btn">Connexion</a>
+                <a href="<?= base_url('frontoffice/inscription') ?>" class="signup-btn">Inscription</a>
+            </div>
         </ul>
     </div>
 
