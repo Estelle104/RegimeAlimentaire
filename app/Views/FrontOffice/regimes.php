@@ -1,60 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Mes Régimes</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .regime-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .regime-card h4 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-        .prix {
-            font-weight: bold;
-            font-size: 18px;
-            color: #28a745;
-        }
-        .prix-remise {
-            text-decoration: line-through;
-            color: #999;
-            margin-right: 10px;
-        }
-        .btn {
-            padding: 8px 15px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .gold-badge {
-            background-color: gold;
-            color: black;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Mes Régimes Recommandés</h1>
+<?= $this->extend('FrontOffice/modele') ?>
+
+<?= $this->section('content') ?>
+        <h1>Mes Régimes Recommandés</h1>
 
     <?php if(session()->getFlashdata('success')): ?>
         <p style="color: green; font-weight: bold;"><?= session()->getFlashdata('success') ?></p>
@@ -105,5 +52,4 @@
         <a href="<?= base_url('frontoffice/profile') ?>" style="padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Retour au profil</a>
         <a href="<?= base_url('frontoffice/exporter-pdf') ?>" style="padding: 10px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; margin-left: 10px;">📥 Telecharger en PDF</a>
     </div>
-</body>
-</html>
+<?= $this->endSection() ?>
