@@ -27,6 +27,7 @@ $routes->group('frontoffice', function ($routes) {
 });
 
 $routes->group('backoffice', function ($routes) {
+    $routes->get('/', 'BackOffice\AdminConnexionController::index');
     $routes->get('connexion', 'BackOffice\AdminConnexionController::index');
     $routes->post('connexion', 'BackOffice\AdminConnexionController::verifier');
     $routes->get('regimes', 'BackOffice\RegimeController::index');
