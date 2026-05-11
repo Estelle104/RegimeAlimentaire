@@ -329,6 +329,16 @@ a {
     box-shadow: 0 8px 18px rgba(178, 75, 63, 0.18);
 }
 
+.action-link--accept {
+    background: #c7e6c0;
+    color: #2b6b2a;
+    border-color: rgba(85, 135, 63, 0.18);
+}
+
+.action-link--accept:hover {
+    box-shadow: 0 8px 18px rgba(85, 135, 63, 0.14);
+}
+
 .empty-state {
     margin: 0;
     padding: 18px 0 4px;
