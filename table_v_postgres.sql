@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id_utilisateur INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     mot_de_passe VARCHAR(255) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE details_sante (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_utilisateur INT NOT NULL,
     taille DECIMAL(5,2) NOT NULL,
     poids DECIMAL(5,2) NOT NULL,
@@ -18,12 +18,12 @@ CREATE TABLE details_sante (
 );
 
 CREATE TABLE objectifs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE objectifs_utilisateurs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_utilisateur INT NOT NULL,
     id_objectif INT NOT NULL,
     FOREIGN KEY (id_utilisateur) REFERENCES users(id_utilisateur),
@@ -31,12 +31,12 @@ CREATE TABLE objectifs_utilisateurs (
 );
 
 CREATE TABLE categories_aliments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE aliments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL,
     id_categorie_aliment INT NOT NULL,
     prix_par_calorie DECIMAL(10,2) NOT NULL,
@@ -44,12 +44,12 @@ CREATE TABLE aliments (
 );
 
 CREATE TABLE apports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE apports_aliments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_aliment INT NOT NULL,
     id_apport INT NOT NULL,
     valeur_calorie DECIMAL(10,2) NOT NULL,
@@ -58,12 +58,12 @@ CREATE TABLE apports_aliments (
 );
 
 CREATE TABLE sports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE regimes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL,
     pourcentage_viande INT NOT NULL,
     pourcentage_poisson INT NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE regimes (
 );
 
 CREATE TABLE details_regimes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_regime INT NOT NULL,
     duree_jours INT NOT NULL,
     prix DECIMAL(10,2) NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE details_regimes (
 );
 
 CREATE TABLE suggestions_programmes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_objectif INT NOT NULL,
     id_regime INT NOT NULL,
     id_sport INT NOT NULL,
@@ -91,14 +91,14 @@ CREATE TABLE suggestions_programmes (
 );
 
 CREATE TABLE codes_recharge (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     valeur_code VARCHAR(50) NOT NULL UNIQUE,
     montant DECIMAL(10,2) NOT NULL,
     statut INT DEFAULT 0
 );
 
 CREATE TABLE achats_regimes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_utilisateur INT NOT NULL,
     id_regime INT NOT NULL,
     prix_paye DECIMAL(10,2) NOT NULL,
@@ -107,9 +107,7 @@ CREATE TABLE achats_regimes (
 );
 
 CREATE TABLE types_abonnements (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     libelle VARCHAR(100) NOT NULL,
     pourcentage_remise DECIMAL(5,2) NOT NULL
 );
-
-ALTER TABLE regimes ADD COLUMN images VARCHAR(255) AFTER pourcentage_volaille;
