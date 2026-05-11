@@ -107,11 +107,11 @@
 
             <button type="button" class="form-submit" onclick="register()">S'inscrire</button>
         </div>
+        <div class="auth-footer" style="margin-top: 20px; text-align: center;">
+            Déjà inscrit ? <a href="<?= base_url('frontoffice/connexion') ?>">Se connecter</a>
+        </div>
     </div>
 
-    <div class="auth-footer" style="margin-top: 20px; text-align: center;">
-        Déjà inscrit ? <a href="<?= base_url('frontoffice/connexion') ?>">Se connecter</a>
-    </div>
 
     <script src="<?= base_url('FrontOffice/js/inscription.js') ?>"></script>
 </body>
