@@ -196,6 +196,9 @@ function register(){
             if(xhr.status === 200){
 
                 alert(response.message);
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                }
 
             }else{
 
