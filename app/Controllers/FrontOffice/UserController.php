@@ -4,6 +4,8 @@ namespace App\Controllers\FrontOffice;
 
 use App\Controllers\BaseController;
 use App\Models\DetailSanteModel;
+use App\Models\ObjectifModel;
+use App\Models\ObjectifUtilisateurModel;
 use App\Models\UtilisateurModel;
 use App\Models\CodeRechargeModel;
 use App\Models\DemandeRechargeModel;
@@ -17,7 +19,12 @@ class UserController extends BaseController
     // }
     public function PageInscription()
     {
-        return view('FrontOffice/inscription');
+        $objectifModel = new ObjectifModel();
+        $objectifs = $objectifModel->findAll();
+
+        return view('FrontOffice/inscription', [
+            'objectifs' => $objectifs,
+        ]);
     }
 
     public function InsertionInscription()
@@ -34,6 +41,19 @@ class UserController extends BaseController
         try {
             $userId = $userModel->createUtilisateur($data);
             session()->set('user_id', $userId);
+
+            $objectifId = $data['objectif'] ?? null;
+            if ($objectifId !== null && is_numeric($objectifId)) {
+                $objectifUtilisateurModel = new ObjectifUtilisateurModel();
+                $row = [
+                    'id_utilisateur' => $userId,
+                    'id_objectif' => (int) $objectifId,
+                ];
+
+                if (!$objectifUtilisateurModel->insert($row)) {
+                    throw new \Exception("Erreur lors de l'insertion de l'objectif");
+                }
+            }
 
             return $this->response->setStatusCode(200)->setJSON([
                 'message' => 'Inscription reussie',

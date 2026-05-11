@@ -2,7 +2,7 @@
 const nom = document.getElementById('nom');
 const email = document.getElementById('email');
 const motDePasse = document.getElementById('mot_de_passe');
-const genre = document.getElementById('genre');
+const genreInputs = document.querySelectorAll('input[name="genre"]');
 
 const taille = document.getElementById('taille');
 const poids = document.getElementById('poids');
@@ -10,7 +10,7 @@ const poids = document.getElementById('poids');
 nom.addEventListener('blur', validateNom);
 email.addEventListener('blur', validateEmail);
 motDePasse.addEventListener('blur', validateMotDePasse);
-genre.addEventListener('blur', validateGenre);
+genreInputs.forEach((input) => input.addEventListener('change', validateGenre));
 
 taille.addEventListener('blur', validateTaille);
 poids.addEventListener('blur', validatePoids);
@@ -81,16 +81,18 @@ function validateEmail(){
 
 function validateGenre(){
 
-    if(genre.value === ''){
+    const selected = document.querySelector('input[name="genre"]:checked');
 
-        setError(genre,
+    if(!selected){
+
+        setError(genreInputs[0],
         'genreError',
         'Choisissez un genre');
 
         return false;
     }
 
-    clearError(genre, 'genreError');
+    clearError(genreInputs[0], 'genreError');
 
     return true;
 
@@ -171,9 +173,14 @@ function register(){
         nom: nom.value,
         email: email.value,
         mot_de_passe: motDePasse.value,
-        genre: genre.value,
+        genre: document.querySelector('input[name="genre"]:checked')
+            ? document.querySelector('input[name="genre"]:checked').value
+            : '',
         taille: taille.value,
-        poids: poids.value
+        poids: poids.value,
+        objectif: document.querySelector('input[name="objectif"]:checked')
+            ? document.querySelector('input[name="objectif"]:checked').value
+            : null
 
     };
 

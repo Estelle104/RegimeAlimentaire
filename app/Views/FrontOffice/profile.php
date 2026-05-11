@@ -54,6 +54,7 @@ if ($imc === null && !empty($details['taille']) && !empty($details['poids'])) {
             <h3 class="small-muted">Mes Régimes</h3>
             <p>Découvrez les régimes recommandés pour vous en fonction de vos objectifs !</p>
             <a href="<?= base_url('frontoffice/regimes') ?>" class="action-link action-link--edit">Voir les régimes</a>
+            <a href="<?= base_url('frontoffice/profil') ?>" class="action-link action-link--edit">Codes gold</a>
         </div>
     </section>
 <?= $this->endSection() ?>

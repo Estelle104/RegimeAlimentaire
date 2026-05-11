@@ -17,6 +17,12 @@
         .form-group label { display: block; color: var(--bo-text); font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
         .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--bo-border); border-radius: 8px; font-size: 0.95rem; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--bo-olive); box-shadow: 0 0 0 3px rgba(111,123,67,0.1); }
+        .objectifs-list { display: grid; gap: 10px; margin-top: 8px; }
+        .objectif-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--bo-border); border-radius: 10px; background: #fff; cursor: pointer; }
+        .objectif-option input { width: auto; margin: 0; }
+        .objectif-option span { color: var(--bo-text); font-weight: 600; font-size: 0.92rem; }
+        .objectif-option input[type="radio"] { accent-color: var(--bo-olive); }
+        .objectif-option:has(input:checked) { border-color: var(--bo-olive); box-shadow: 0 0 0 3px rgba(111,123,67,0.08); }
         .error { color: #b24b3f; font-size: 12px; margin-top: 4px; display: none; }
         .error.show { display: block; }
         .form-submit { width: 100%; padding: 12px; background: var(--bo-olive); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 10px; }
@@ -54,11 +60,16 @@
 
             <div class="form-group">
                 <label for="genre">Genre</label>
-                <select id="genre">
-                    <option value="">Sélectionnez votre genre</option>
-                    <option>Homme</option>
-                    <option>Femme</option>
-                </select>
+                <div class="objectifs-list">
+                    <label class="objectif-option">
+                        <input type="radio" name="genre" value="Homme">
+                        <span>Homme</span>
+                    </label>
+                    <label class="objectif-option">
+                        <input type="radio" name="genre" value="Femme">
+                        <span>Femme</span>
+                    </label>
+                </div>
                 <div class="error" id="genreError"></div>
             </div>
             <button type="button" class="form-submit" onclick="goToStep2()">Suivant</button>
@@ -76,6 +87,22 @@
                 <label for="poids">Poids (kg)</label>
                 <input type="number" id="poids" placeholder="Exemple: 70" min="20" max="250">
                 <div class="error" id="poidsError"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Objectifs</label>
+                <?php if (!empty($objectifs)) : ?>
+                    <div class="objectifs-list">
+                        <?php foreach ($objectifs as $objectif) : ?>
+                            <label class="objectif-option">
+                                <input type="radio" name="objectif" value="<?= esc($objectif['id']) ?>">
+                                <span><?= esc($objectif['libelle']) ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <div>Aucun objectif disponible.</div>
+                <?php endif; ?>
             </div>
 
             <button type="button" class="form-submit" onclick="register()">S'inscrire</button>
