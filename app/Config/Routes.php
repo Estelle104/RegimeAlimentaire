@@ -13,6 +13,7 @@ $routes->group('frontoffice', function ($routes) {
     $routes->get('connexion', 'FrontOffice\UserController::PageConnection');
     $routes->post('connexion', 'FrontOffice\UserController::VerifierConnection');
     $routes->get('profile', 'FrontOffice\UserController::PageProfile');
+    $routes->post('profile', 'FrontOffice\UserController::UpdateProfile');
     $routes->get('profile/edit', 'FrontOffice\UserController::PageProfileEdit');
     $routes->get('profil', 'FrontOffice\UserController::profil');
     $routes->post('recharge', 'FrontOffice\UserController::demanderRecharge');
