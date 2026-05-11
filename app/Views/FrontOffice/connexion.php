@@ -43,12 +43,13 @@
         </form>
 
         <div class="auth-footer">
-            Pas encore inscrit ? <a href="<?= base_url('frontoffice/inscription') ?>">Créer un compte</a>
+            Pas encore inscrit ? <a href="<?= base_url('frontoffice/inscription') ?>">Créer un compte</a><br>
+            <a href="<?= base_url('backoffice/connexion') ?>">Se connecter en tant qu'administrateur</a>
         </div>
     </div>
 
-        <a href="<?= base_url('frontoffice/inscription') ?>">Pas encore inscrit ?</a>
-        <a href="<?= base_url('backoffice/connexion') ?>">Connexion admin</a>
+        <!-- <a href="<?= base_url('frontoffice/inscription') ?>">Pas encore inscrit ?</a>
+        > -->
 
     <script src="<?= base_url('FrontOffice/js/connexion.js') ?>"></script>
 </body>
