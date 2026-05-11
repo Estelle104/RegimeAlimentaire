@@ -19,7 +19,9 @@ function setError(input, errorId, message){
 
     input.classList.add('input-error');
 
-    document.getElementById(errorId).innerText = message;
+    const errorEl = document.getElementById(errorId);
+    errorEl.innerText = message;
+    errorEl.classList.add('show');
 
 }
 
@@ -27,7 +29,9 @@ function clearError(input, errorId){
 
     input.classList.remove('input-error');
 
-    document.getElementById(errorId).innerText = '';
+    const errorEl = document.getElementById(errorId);
+    errorEl.innerText = '';
+    errorEl.classList.remove('show');
 
 }
 
