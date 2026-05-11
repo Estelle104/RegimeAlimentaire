@@ -278,4 +278,8 @@ class UserController extends BaseController
 
         return redirect()->back()->with('success', 'Félicitations, vous êtes membre Gold ! Vous bénéficiez de 15% de remise sur tous nos régimes.');
     }
+
+    public function deconnexion(){
+         return view('FrontOffice/inscription');
+    }
 }

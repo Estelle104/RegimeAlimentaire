@@ -20,6 +20,7 @@
                 <a href="<?= base_url('frontoffice/profile') ?>">Accueil</a>
                 <a href="<?= base_url('frontoffice/profile') ?>">Profil</a>
                 <a href="<?= base_url('frontoffice/regimes') ?>">Mes régimes</a>
+                <a href="<?= base_url('frontoffice/deconnexion') ?>">Deconnexion</a>
             </nav>
         </aside>
 

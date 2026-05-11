@@ -42,4 +42,7 @@ class AdminConnexionController extends BaseController
             'message' => 'Identifiants invalides',
         ]);
     }
+    public function deconnexion(){
+        return view('BackOffice/connexion');
+    }
 }

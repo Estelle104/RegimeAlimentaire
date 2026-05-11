@@ -18,6 +18,7 @@ $routes->group('frontoffice', function ($routes) {
     $routes->get('profil', 'FrontOffice\UserController::profil');
     $routes->post('recharge', 'FrontOffice\UserController::demanderRecharge');
     $routes->post('devenir-gold', 'FrontOffice\UserController::devenirGold');
+    $routes->get('deconnexion','FrontOffice\UserController::deconnexion');
     
 
     $routes->get('regimes', 'FrontOffice\RegimeController::index');
@@ -35,6 +36,7 @@ $routes->group('backoffice', function ($routes) {
     $routes->post('regimes/update/(:num)', 'BackOffice\RegimeController::updateAction/$1');
     $routes->get('regimes/delete/(:num)', 'BackOffice\RegimeController::delete/$1');
     $routes->get('dashboard', 'BackOffice\DashboardController::index');
+    $routes->get('deconnexion','BackOffice\AdminConnexionController::deconnexion');
     
     $routes->get('recharges', 'BackOffice\AdminRechargeController::index');
     $routes->get('recharges/valider/(:num)', 'BackOffice\AdminRechargeController::valider/$1');
