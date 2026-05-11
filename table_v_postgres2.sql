@@ -7,3 +7,4 @@ CREATE TABLE demandes_recharge (
     FOREIGN KEY (id_utilisateur) REFERENCES users(id_utilisateur),
     FOREIGN KEY (id_code_recharge) REFERENCES codes_recharge(id)
 );
+

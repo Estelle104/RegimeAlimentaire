@@ -4,29 +4,37 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>BackOffice</title>
+	<link rel="stylesheet" href="<?= base_url('assets/backOffice/css/backoffice.css') ?>">
 </head>
 <body>
-	<header>
-		<h1>BackOffice</h1>
+	<div class="backoffice-shell">
+		<aside class="backoffice-sidebar">
+			<div class="backoffice-brand">
+				<p class="backoffice-kicker">BackOffice</p>
+				<h1>Regime Alimentaire</h1>
+				<p class="backoffice-subtitle">Gestion claire, élégante et rapide.</p>
+			</div>
 
-		<nav>
-			<form action="<?= base_url('/') ?>" method="get">
-				<button type="submit">Accueil</button>
-			</form>
+			<nav class="backoffice-nav" aria-label="Navigation backoffice">
+				<a href="<?= base_url('backoffice/dashboard') ?>">Dashboard</a>
+				<a href="<?= base_url('backoffice/regimes') ?>">Liste des régimes</a>
+				<a href="<?= base_url('backoffice/recharges') ?>">Demandes de recharge</a>
+				<a href="<?= base_url('/') ?>">Retour au site</a>
+			</nav>
+		</aside>
 
-			<form action="<?= base_url('backoffice/regimes') ?>" method="get">
-				<button type="submit">Liste des regimes</button>
-			</form>
+		<div class="backoffice-content">
+			<header class="backoffice-topbar">
+				<div>
+					<p class="backoffice-kicker">Espace d'administration</p>
+					<h2>Tableau de bord</h2>
+				</div>
+			</header>
 
-            <form action="<?= base_url('backoffice/dashboard') ?>" method="get">
-                <button type="submit">Dashboard</button>
-            </form>
-		</nav>
-		<hr>
-	</header>
-
-	<main>
-		<?= $this->renderSection('content') ?>
-	</main>
+			<main class="backoffice-main">
+				<?= $this->renderSection('content') ?>
+			</main>
+		</div>
+	</div>
 </body>
 </html>

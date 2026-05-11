@@ -5,40 +5,64 @@ $regimes = isset($regimes) ? $regimes : [];
 <?= $this->extend('BackOffice/modele') ?>
 
 <?= $this->section('content') ?>
-    <h1>Liste des régimes</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Libellé</th>
-                <th>Pourcentage de viande</th>
-                <th>Pourcentage de poisson</th>
-                <th>Pourcentage de volaille</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($regimes as $regime): ?>
-                <tr>
-                    <td><?= $regime['id'] ?></td>
-                    <td><?= $regime['libelle'] ?></td>
-                    <td><?= $regime['pourcentage_viande'] ?></td>
-                    <td><?= $regime['pourcentage_poisson'] ?></td>
-                    <td><?= $regime['pourcentage_volaille'] ?></td>
-                    <td>
-                        <a href="<?= base_url('backoffice/regimes/update/' . $regime['id']) ?>">
-                            Update
-                        </a>
+    <section class="content-card">
+        <div class="section-head">
+            <div>
+                <p class="backoffice-kicker">Gestion des régimes</p>
+                <h1>Liste des régimes</h1>
+            </div>
+        </div>
 
-                        |
-                        
-                        <a href="<?= base_url('backoffice/regimes/delete/' . $regime['id']) ?>"
-                            onclick="return confirm('Supprimer ce régime ?')">
-                            Delete
-                        </a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <?php if (! empty($regimes)): ?>
+            <div class="regime-grid">
+                <?php foreach ($regimes as $regime): ?>
+                    <?php
+                        $nomRegime = trim((string) ($regime['libelle'] ?? 'Régime sans nom'));
+                        $imageValue = trim((string) ($regime['images'] ?? ''));
+                        $imageSource = '';
+
+                        if ($imageValue !== '') {
+                            if (preg_match('#^https?://#i', $imageValue)) {
+                                $imageSource = $imageValue;
+                            } else {
+                                $candidatePath = ltrim($imageValue, '/');
+                                if (is_file(FCPATH . $candidatePath)) {
+                                    $imageSource = base_url($candidatePath);
+                                }
+                            }
+                        }
+                    ?>
+                    <article class="regime-card">
+                        <div class="regime-card__media">
+                            <?php if ($imageSource !== ''): ?>
+                                <img src="<?= esc($imageSource) ?>" alt="<?= esc($nomRegime) ?>">
+                            <?php else: ?>
+                                <div class="regime-card__fallback"><?= esc($nomRegime) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="regime-card__body">
+                            <div class="regime-card__title-row">
+                                <h2><?= esc($nomRegime) ?></h2>
+                                <span class="regime-badge">#<?= esc((string) ($regime['id'] ?? '')) ?></span>
+                            </div>
+
+                            <div class="regime-meta">
+                                <span><strong>Viande</strong> <?= esc((string) ($regime['pourcentage_viande'] ?? '')) ?>%</span>
+                                <span><strong>Poisson</strong> <?= esc((string) ($regime['pourcentage_poisson'] ?? '')) ?>%</span>
+                                <span><strong>Volaille</strong> <?= esc((string) ($regime['pourcentage_volaille'] ?? '')) ?>%</span>
+                            </div>
+
+                            <div class="regime-actions">
+                                <a class="action-link action-link--edit" href="<?= base_url('backoffice/regimes/update/' . $regime['id']) ?>">Modifier</a>
+                                <a class="action-link action-link--delete" href="<?= base_url('backoffice/regimes/delete/' . $regime['id']) ?>" onclick="return confirm('Supprimer ce régime ?')">Supprimer</a>
+                            </div>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="empty-state">Aucun régime disponible pour le moment.</p>
+        <?php endif; ?>
+    </section>
 <?= $this->endSection() ?>
