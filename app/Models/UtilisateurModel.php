@@ -77,9 +77,9 @@ class UtilisateurModel extends Model
             throw new \Exception("Erreur lors de l'insertion");
         }
 
-        $taille = (float) $data['taille'];
+        $taille = (float) $data['taille']/100;
         $poids = (float) $data['poids'];
-        $imc = $taille > 0 ? $poids / ($taille ** 2) : null;
+        $imc = $taille > 0 ? $poids / ($taille * $taille) : null;
 
         $detailData = [
             'id_utilisateur' => $insertId,

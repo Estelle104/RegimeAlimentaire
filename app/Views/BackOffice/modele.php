@@ -19,7 +19,7 @@
 				<a href="<?= base_url('backoffice/dashboard') ?>">Dashboard</a>
 				<a href="<?= base_url('backoffice/regimes') ?>">Liste des régimes</a>
 				<a href="<?= base_url('backoffice/recharges') ?>">Demandes de recharge</a>
-				<a href="<?= base_url('backoffice/deconnexion') ?>">Deconnexion</a>
+				<a href="<?= base_url('/') ?>">Deconnexion</a>
 			</nav>
 		</aside>
 
