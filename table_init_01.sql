@@ -111,3 +111,5 @@ CREATE TABLE types_abonnements (
     libelle VARCHAR(100) NOT NULL,
     pourcentage_remise DECIMAL(5,2) NOT NULL
 );
+
+ALTER TABLE regimes ADD COLUMN images VARCHAR(255) AFTER pourcentage_volaille;

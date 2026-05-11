@@ -13,48 +13,105 @@ foreach ($achatsParRegime as $ligne) {
 }
 ?>
 
-    <h2>Dashboard</h2>
+    <div class="section-head">
+        <div>
+            <p class="backoffice-kicker">Tableau de bord</p>
+            <h2>Dashboard</h2>
+        </div>
+    </div>
 
-    <h3>Indicateurs</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Régimes</th>
-                <th>Utilisateurs</th>
-                <th>Achats</th>
-                <th>Codes validés</th>
-                <th>Codes en attente</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><?= htmlspecialchars((string) ($stats['total_regimes'] ?? 0)) ?></td>
-                <td><?= htmlspecialchars((string) ($stats['total_utilisateurs'] ?? 0)) ?></td>
-                <td><?= htmlspecialchars((string) ($stats['total_achats'] ?? 0)) ?></td>
-                <td><?= htmlspecialchars((string) ($stats['codes_valides'] ?? 0)) ?></td>
-                <td><?= htmlspecialchars((string) ($stats['codes_en_attente'] ?? 0)) ?></td>
-            </tr>
-        </tbody>
-    </table>
+    <h3 class="small-muted">Indicateurs</h3>
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">Régimes</div>
+            <div class="kpi-value"><?= htmlspecialchars((string) ($stats['total_regimes'] ?? 0)) ?></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Utilisateurs</div>
+            <div class="kpi-value"><?= htmlspecialchars((string) ($stats['total_utilisateurs'] ?? 0)) ?></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Achats</div>
+            <div class="kpi-value"><?= htmlspecialchars((string) ($stats['total_achats'] ?? 0)) ?></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Codes validés</div>
+            <div class="kpi-value"><?= htmlspecialchars((string) ($stats['codes_valides'] ?? 0)) ?></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Codes en attente</div>
+            <div class="kpi-value"><?= htmlspecialchars((string) ($stats['codes_en_attente'] ?? 0)) ?></div>
+        </div>
+    </div>
 
-    <h3>Achats par régime</h3>
-    <?php if ($achatsParRegime === []): ?>
-        <p>Aucune donnée d'achat disponible pour le moment.</p>
-    <?php else: ?>
-        <svg width="700" height="<?php echo 60 + (count($achatsParRegime) * 40); ?>" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graphique des achats par régime">
-            <?php foreach ($achatsParRegime as $index => $ligne): ?>
-                <?php
-                $nomRegime = (string) ($ligne['nom_regime'] ?? '');
-                $totalAchats = (int) ($ligne['total_achats'] ?? 0);
-                $barWidth = $maxAchats > 0 ? (int) round(($totalAchats / $maxAchats) * 420) : 0;
-                $y = 30 + ($index * 40);
-                ?>
-                <text x="10" y="<?= $y ?>" font-size="14"><?= htmlspecialchars($nomRegime) ?></text>
-                <rect x="200" y="<?= $y - 12 ?>" width="<?= $barWidth ?>" height="18" fill="black"></rect>
-                <text x="630" y="<?= $y ?>" font-size="14"><?= htmlspecialchars((string) $totalAchats) ?></text>
-            <?php endforeach; ?>
-        </svg>
-    <?php endif; ?>
+    <div class="charts-row">
+        <div class="chart-card">
+            <h3 class="small-muted">Achats par régime</h3>
+            <canvas id="achatsByRegime"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3 class="small-muted">Codes (validés / attente)</h3>
+            <canvas id="codesStatus"></canvas>
+        </div>
+    </div>
+
+    <?php
+    // Préparer les données JSON pour JS
+    $labels = [];
+    $dataAchats = [];
+    foreach ($achatsParRegime as $ligne) {
+        $labels[] = (string) ($ligne['nom_regime'] ?? '');
+        $dataAchats[] = (int) ($ligne['total_achats'] ?? 0);
+    }
+
+    $codesValides = (int) ($stats['codes_valides'] ?? 0);
+    $codesAttente = (int) ($stats['codes_en_attente'] ?? 0);
+    ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function(){
+            const achatsCtx = document.getElementById('achatsByRegime').getContext('2d');
+            const labels = <?= json_encode($labels, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+            const data = <?= json_encode($dataAchats) ?>;
+
+            new Chart(achatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Achats',
+                        data: data,
+                        backgroundColor: labels.map(()=> 'rgba(111,123,67,0.85)'),
+                        borderColor: labels.map(()=> 'rgba(85,97,54,0.95)'),
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision:0 } }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            const codesCtx = document.getElementById('codesStatus').getContext('2d');
+            new Chart(codesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Validés','En attente'],
+                    datasets: [{
+                        data: [<?= $codesValides ?>, <?= $codesAttente ?>],
+                        backgroundColor: ['rgba(111,123,67,0.9)', 'rgba(178,75,63,0.9)'],
+                        hoverOffset: 8
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } }, responsive:true, maintainAspectRatio:false }
+            });
+        })();
+    </script>
 
     <h3>Derniers achats</h3>
     <table border="1">
